@@ -2,6 +2,8 @@ import argparse
 import os
 import subprocess
 import boto3
+import hashlib
+import datetime
 
 
 def is_aws_configured(profile_name=None):
@@ -79,12 +81,15 @@ if __name__ == '__main__':
                     print("Bucket exists. Sending...")
                     s3_client = boto3.client('s3')
 
+                    foldername = str(args.file).replace(".", "-")+"-"+datetime.datetime.now().strftime("%H%M%S%m%d%Y")
+                    print(foldername)
+
                     for filename in os.listdir('.'):
                         # Check if the item is a file and contains '.part' in its name
                         if os.path.isfile(filename) and '.part' in filename:
                             try:
-                                s3_client.upload_file(filename, str(args.diode), filename)
-                                print(f"File uploaded successfully to s3://{bucket_name}/{filename}")
+                                s3_client.upload_file(filename, str(args.diode), '%s/%s' % (foldername,filename) )
+                                print(f"File uploaded successfully to s3://{bucket_name}/{foldername}/{filename}")
                             except Exception as e:
                                 print(f"Error uploading file: {e}")
                 else:
