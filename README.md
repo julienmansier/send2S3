@@ -10,7 +10,7 @@ This script takes in a file from command line input, splits it into many parts, 
 #### Command Line Arugments 
 -f, -file: full path of the file to split and send to S3\
 -c, -chunks: size of the file parts; i.e. 100m for 100 MB\
--b, -bucket: AWS bucket name\
+-b, -bucket: AWS bucket name
 
 ## Usage
 ```
