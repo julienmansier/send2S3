@@ -56,7 +56,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Process a file with park or unpack options.')
     parser.add_argument('-f', '--file', type=str, required=True, help='Path to the file')
     parser.add_argument('-c', '--chunk', type=str, help='Chunk size')
-    parser.add_argument('-d', '--diode', type=str, help='Chunk size')
+    parser.add_argument('-b', '--bucket', type=str, help='Chunk size')
 
     return parser.parse_args()
 
@@ -74,9 +74,9 @@ if __name__ == '__main__':
 
             # Check if the command was successful
             if result.returncode == 0:
-                print("Splitting files done....sending to diode")
+                print("Splitting files done....sending to S3")
 
-                bucket_name =str(args.diode)
+                bucket_name =str(args.bucket)
                 if bucket_exists(bucket_name):
                     print("Bucket exists. Sending...")
                     s3_client = boto3.client('s3')
@@ -88,7 +88,7 @@ if __name__ == '__main__':
                         # Check if the item is a file and contains '.part' in its name
                         if os.path.isfile(filename) and '.part' in filename:
                             try:
-                                s3_client.upload_file(filename, str(args.diode), '%s/%s' % (foldername,filename) )
+                                s3_client.upload_file(filename, str(args.bucket), '%s/%s' % (foldername,filename) )
                                 print(f"File uploaded successfully to s3://{bucket_name}/{foldername}/{filename}")
                             except Exception as e:
                                 print(f"Error uploading file: {e}")
